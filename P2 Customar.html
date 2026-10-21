@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">Store</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: #111827;
+      --accent-blue: #3b82f6;
+      --accent-yellow: #f59e0b;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-color: #1f2937;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+    header { background-color: #060913; border-bottom: 1px solid var(--border-color); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .brand-logo { display: flex; align-items: center; gap: 12px; font-size: 1.15rem; font-weight: 700; color: #fff; cursor: pointer; }
+    .avatar-circle { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #ef4444); display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    nav { display: flex; align-items: center; gap: 16px; }
+    .nav-links { display: flex; list-style: none; gap: 12px; }
+    .nav-links li button { background: none; border: none; color: var(--text-muted); font-size: 0.92rem; font-weight: 500; cursor: pointer; padding: 6px 12px; border-radius: 6px; }
+    .nav-links li button:hover, .nav-links li button.active { color: #fff; background-color: rgba(255, 255, 255, 0.08); }
+    .btn-login-nav { background: linear-gradient(90deg, #ff6b3d, #ff3d00); color: #fff; border: none; padding: 8px 22px; border-radius: 20px; font-weight: 600; cursor: pointer; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 30px 16px; width: 100%; flex-grow: 1; }
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+    .section-title { font-size: 1.85rem; font-weight: 700; margin-bottom: 6px; }
+    .section-desc { color: var(--text-muted); margin-bottom: 24px; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .product-card { background-color: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; }
+    .thumbnail-wrapper { position: relative; height: 180px; background: #1e293b; }
+    .thumbnail-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .badge-doc { position: absolute; bottom: 10px; left: 10px; background: rgba(0, 0, 0, 0.75); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; }
+    .product-details { padding: 16px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+    .product-name { font-size: 1.05rem; font-weight: 600; margin-bottom: 12px; }
+    .price-row { display: flex; align-items: center; justify-content: space-between; }
+    .current-price { font-size: 1.3rem; font-weight: 700; }
+    .original-price { font-size: 0.85rem; color: var(--text-muted); text-decoration: line-through; margin-left: 6px; }
+    .btn-buy { background-color: var(--accent-blue); color: white; padding: 8px 18px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+    .webinar-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px; border-left: 5px solid var(--accent-yellow); margin-bottom: 20px; }
+    .btn-action { width: 100%; padding: 11px; background: #10b981; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-card { background: #fff; color: #111; border-radius: 20px; max-width: 400px; width: 100%; padding: 24px; position: relative; }
+    .modal-close { position: absolute; top: 16px; right: 18px; border: none; background: none; font-size: 1.5rem; cursor: pointer; }
+    @media(max-width: 900px) { .nav-links { overflow-x: auto; white-space: nowrap; } header { flex-direction: column; align-items: flex-start; gap: 12px; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-logo" onclick="navigateTo('products')">
+      <div class="avatar-circle" id="headerLogoIcon">RM</div>
+      <span id="headerBrandTitle">MD Raja Mani</span>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><button onclick="navigateTo('courses')" id="nav-courses">Courses</button></li>
+        <li><button onclick="navigateTo('about')" id="nav-about">About</button></li>
+        <li><button onclick="navigateTo('contact')" id="nav-contact">Contact Us</button></li>
+        <li><button onclick="navigateTo('avatar')" id="nav-avatar">AI Avatar</button></li>
+        <li><button onclick="navigateTo('webinars')" id="nav-webinars">Webinars</button></li>
+        <li><button onclick="navigateTo('products')" id="nav-products" class="active">Digital Products</button></li>
+        <li><button onclick="navigateTo('membership')" id="nav-membership">Membership</button></li>
+      </ul>
+      <button class="btn-login-nav" onclick="openLoginModal()">Login</button>
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- Products -->
+    <section id="page-products" class="page-section active">
+      <h1 class="section-title">Digital Products</h1>
+      <p class="section-desc">Official Store by <strong id="storeBrandSubtitle" style="color:var(--accent-blue);">MD Raja Mani</strong></p>
+      <div class="product-grid" id="customerStoreGrid"></div>
+    </section>
+
+    <!-- Webinars -->
+    <section id="page-webinars" class="page-section">
+      <h1 class="section-title">Upcoming Live Webinars</h1>
+      <p class="section-desc">विशेष वर्कशॉप्स और लाइव ट्रेनिंग सेशंस</p>
+      <div id="customerWebinarList"></div>
+    </section>
+
+    <!-- Courses -->
+    <section id="page-courses" class="page-section">
+      <h1 class="section-title">Master Courses</h1>
+      <p class="section-desc">Step-by-step editing और ऑटोमेशन कोर्सेस</p>
+      <div class="product-grid" id="customerCourseList"></div>
+    </section>
+
+    <!-- About -->
+    <section id="page-about" class="page-section">
+      <h1 class="section-title">About Us</h1>
+      <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; padding:24px; max-width:800px; margin-top:16px;">
+        <h3 id="displayAboutBrandTitle" style="margin-bottom:10px;">MD Raja Mani</h3>
+        <p id="displayAboutBrandBio" style="color:var(--text-muted); line-height:1.6;"></p>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="page-contact" class="page-section">
+      <h1 class="section-title">Contact Us</h1>
+      <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; padding:24px; max-width:450px; margin-top:16px;">
+        <p style="margin-bottom:8px;"><strong>Brand:</strong> <span id="contactDisplayBrand">MD Raja Mani</span></p>
+        <p style="margin-bottom:8px;"><strong>Email:</strong> <span id="contactDisplayEmail">help@mdrajamani.com</span></p>
+        <p style="margin-bottom:18px;"><strong>WhatsApp:</strong> <span id="contactDisplayPhone">+91 98765 43210</span></p>
+        <button class="btn-action" style="background:#25d366;" id="contactWhatsappBtn"><i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp</button>
+      </div>
+    </section>
+
+    <!-- AI Avatar -->
+    <section id="page-avatar" class="page-section">
+      <h1 class="section-title">AI Avatar & Motion Tools</h1>
+      <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; padding:24px; max-width:550px; margin-top:16px;">
+        <h3>AI Talking Avatar Studio</h3>
+        <p style="color:var(--text-muted); margin:10px 0 16px;">एक क्लिक में फोटो से रियलिस्टिक टॉकिंग वीडियो और सबटाइटल्स तैयार करें।</p>
+        <button class="btn-action" style="background:var(--accent-blue);">Launch Avatar Tool</button>
+      </div>
+    </section>
+
+    <!-- Membership -->
+    <section id="page-membership" class="page-section">
+      <h1 class="section-title">VIP Membership</h1>
+      <div style="background:var(--card-bg); border:2px solid var(--accent-yellow); border-radius:14px; padding:28px; max-width:500px; margin-top:16px;">
+        <h3 id="displayMemTitle">All-In-One Creator Pass</h3>
+        <h2 id="displayMemPrice" style="font-size:2.2rem; margin:14px 0;">₹999 / Year</h2>
+        <a id="displayMemLink" href="#" target="_blank" class="btn-action" style="background:var(--accent-yellow); color:#111; text-decoration:none; display:inline-block; text-align:center;">
+          <i class="fa-solid fa-gem"></i> Join VIP Membership
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="authModal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+      <h2 style="margin-bottom:16px;">Create Account / Login</h2>
+      <input type="text" placeholder="Name" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:6px;">
+      <input type="email" placeholder="Email" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:6px;">
+      <button class="btn-action" style="background:#818cf8;" onclick="alert('Proceeding!'); closeLoginModal();">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    // Load Shared Data from LocalStorage
+    const dbBrand = JSON.parse(localStorage.getItem('db_brand_settings')) || {
+      name: "MD Raja Mani",
+      logoText: "RM",
+      email: "help@mdrajamani.com",
+      phone: "+91 98765 43210",
+      bio: "हम डिजिटल एडिटर्स, वेडिंग एल्बम डिजाइनर्स और फोटो स्टूडियोज़ के लिए हाई-स्पीड ऑटोमेशन टूल्स, प्रीमियम प्लगइन्स और मास्टर ट्रेनिंग उपलब्ध कराते हैं।"
+    };
+    const dbWebinars = JSON.parse(localStorage.getItem('db_webinars')) || [];
+    const dbProducts = JSON.parse(localStorage.getItem('db_products')) || [];
+    const dbCourses = JSON.parse(localStorage.getItem('db_courses')) || [];
+    const dbMembership = JSON.parse(localStorage.getItem('db_membership')) || {
+      title: "All-In-One Creator Pass",
+      price: "₹999 / Year",
+      link: "https://wa.me/919876543210"
+    };
+
+    // Apply Brand
+    document.getElementById('pageTitle').innerText = dbBrand.name + " - Official Store";
+    document.getElementById('headerBrandTitle').innerText = dbBrand.name;
+    document.getElementById('headerLogoIcon').innerText = dbBrand.logoText || "RM";
+    document.getElementById('storeBrandSubtitle').innerText = dbBrand.name;
+    document.getElementById('displayAboutBrandTitle').innerText = dbBrand.name;
+    document.getElementById('displayAboutBrandBio').innerText = dbBrand.bio;
+    document.getElementById('contactDisplayBrand').innerText = dbBrand.name;
+    document.getElementById('contactDisplayEmail').innerText = dbBrand.email;
+    document.getElementById('contactDisplayPhone').innerText = dbBrand.phone;
+    const cleanPhone = dbBrand.phone.replace(/[^0-9]/g, '');
+    document.getElementById('contactWhatsappBtn').onclick = () => window.open(`https://wa.me/${cleanPhone}`, '_blank');
+
+    // Navigation
+    function navigateTo(pageId) {
+      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-links button').forEach(btn => btn.classList.remove('active'));
+      const targetPage = document.getElementById(`page-${pageId}`);
+      if (targetPage) targetPage.classList.add('active');
+      const activeNavBtn = document.getElementById(`nav-${pageId}`);
+      if (activeNavBtn) activeNavBtn.classList.add('active');
+    }
+
+    // Render Products
+    document.getElementById('customerStoreGrid').innerHTML = dbProducts.length ? dbProducts.map(p => `
+      <div class="product-card">
+        <div class="thumbnail-wrapper"><img src="${p.img}"><span class="badge-doc">${p.tag}</span></div>
+        <div class="product-details">
+          <div class="product-name">${p.title}</div>
+          <div class="price-row">
+            <div><span class="current-price">${p.price}</span>${p.cutPrice ? `<span class="original-price">${p.cutPrice}</span>` : ''}</div>
+            <a href="${p.link}" target="_blank" class="btn-buy">${p.price.toLowerCase().includes('free') ? 'Get Now' : 'Buy now'}</a>
+          </div>
+        </div>
+      </div>`).join('') : '<p style="color:var(--text-muted)">कोई प्रोडक्ट अभी उपलब्ध नहीं है।</p>';
+
+    // Render Webinars
+    document.getElementById('customerWebinarList').innerHTML = dbWebinars.length ? dbWebinars.map(w => `
+      <div class="webinar-card">
+        <h2 style="font-size:1.3rem; margin-bottom:8px;">${w.title}</h2>
+        <p style="color:var(--text-muted); margin-bottom:12px;">${w.desc || ''}</p>
+        <p><strong>Date & Time:</strong> ${w.date} at ${w.time} | <strong>Platform:</strong> ${w.platform}</p>
+        <a href="${w.link}" target="_blank" class="btn-action" style="display:inline-block; width:auto; margin-top:12px; background:var(--accent-yellow); color:#111; text-decoration:none; padding:8px 20px;">Join Webinar</a>
+      </div>`).join('') : '<p style="color:var(--text-muted)">फिलहाल कोई आगामी वेबिनार नहीं है।</p>';
+
+    // Render Courses
+    document.getElementById('customerCourseList').innerHTML = dbCourses.length ? dbCourses.map(c => `
+      <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; padding:20px;">
+        <h3 style="margin-bottom:8px;">${c.title}</h3>
+        <p style="color:var(--text-muted); margin-bottom:12px;">${c.desc || ''}</p>
+        <div style="font-size:1.3rem; font-weight:bold; color:#10b981; margin-bottom:12px;">${c.fee}</div>
+        <a href="${c.link}" target="_blank" class="btn-buy">Enroll Now</a>
+      </div>`).join('') : '<p style="color:var(--text-muted)">कोई कोर्स उपलब्ध नहीं है।</p>';
+
+    // Render Membership
+    document.getElementById('displayMemTitle').innerText = dbMembership.title;
+    document.getElementById('displayMemPrice').innerText = dbMembership.price;
+    document.getElementById('displayMemLink').href = dbMembership.link;
+
+    function openLoginModal() { document.getElementById('authModal').style.display = 'flex'; }
+    function closeLoginModal() { document.getElementById('authModal').style.display = 'none'; }
+  </script>
+</body>
+</html>
